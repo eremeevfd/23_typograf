@@ -9,28 +9,50 @@ logger = logging.getLogger(__name__)
 
 LAQUO = '«'
 RAQUO = '»'
+NBSP = '\u00A0'
+NDASH = '–'
+MDASH = '—'
+
+
+def replace_quotes(text):
+    text = re.sub(r'(?<![=<])[\'\"](?![<>])(.*?)[\'\"](?!>)', r'{}\1{}'.format(LAQUO, RAQUO), text)
+    return text
+
+
+def binding_words_with_numbers(text):
+    text = re.sub(r'(\d)\s(\w)', r'\1{nbsp}\2'.format(nbsp=NBSP), text)
+    return text
+
+
+def replace_hyphens(text):
+    text = re.sub(r'(\s)-(\s)', r'\1{mdash}\2'.format(mdash=MDASH), text)
+    return text
+
+
+def bind_short_word_with_next_word(text):
+    text = re.sub(r'(\w{,2})\s(\w+)', r'\1{nbsp}\2'.format(nbsp=NBSP), text)
+    return text
+
+
+def delete_extra_spaces(text):
+    text = re.sub(r'[ ]+', r' ', text)
+    return text
+
+
+def delete_extra_lines(text):
+    text = re.sub(r'\n{2,}', r'\n', text)
+    return text
+
 
 def typograf(text):
-    return re.sub(r'"', LAQUO, line.rstrip())
+    text = replace_quotes(text)
+    text = binding_words_with_numbers(text)
+    text = replace_hyphens(text)
+    text = bind_short_word_with_next_word(text)
+    text = delete_extra_spaces(text)
+    text = delete_extra_lines(text)
+    return text
+
 
 if __name__ == '__main__':
-    for line in fileinput.input():
-        line = re.sub(r'&', r'&amp', line.rstrip())
-        line = re.sub(r'<', r'&lt', line.rstrip())
-        line = re.sub(r'>', r'&gt', line.rstrip())
-        line = re.sub(r'\s+', r' ', line.rstrip())
-        line = re.sub(r' - ', r' – ', line.rstrip())
-        while '"' in line:
-            line = line.replace('"', LAQUO, 1)
-            line = line.replace('"', RAQUO, 1)
-        while "\'" in line:
-            line = line.replace('\'', LAQUO, 1)
-            line = line.replace('\'', RAQUO, 1)
-
-        # result = True
-        # while result:
-        #     result = re.search(r'\"', line)
-        #     print(result)
-        # for m in re.finditer(r"\"", line):
-        #     print(m.start(), m.end())
-        print(line)
+        print(typograf(input('text: ')))
