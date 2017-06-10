@@ -10,7 +10,15 @@ Typograf can:
 5) Bind short words with afterward words
 6) Replace hyphen with mdash
 
-Typograf has web-interface, so run __server.py__ and enjoy your perfect texts!
+# How to run
+
+You can Typograf locally. Go to terminal, change directory to **/23_typograf** and type this:
+```
+$ pip install -r requirements.txt
+$ python server.py
+```
+
+Typograf runs on [127.0.0.1:5000](http://127.0.0.1:5000/) by default.
 
 # Project Goals
 

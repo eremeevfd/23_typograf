@@ -1,9 +1,4 @@
 import re
-import logging
-
-
-logging.basicConfig(level='INFO')
-logger = logging.getLogger(__name__)
 
 
 LAQUO = '«'
